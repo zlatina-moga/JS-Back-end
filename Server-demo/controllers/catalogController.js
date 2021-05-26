@@ -1,16 +1,20 @@
-const layout = require('../views/layout')
+const layout = require('../views/layout');
+const database = require('../database');
 
-const catalogPage = `
+const catalogPage = (items) => `
 <div>
     <h1>Catalog</h1>
+    <form method="POST" action ="/create">
+        <label>Name <input type="text" name="name"></label>
+        <label>S/N <input type="text" name="serial"></label>
+        <input type="submit" value="Create Item">
+    </form>
     <ul>
-        <li>First Item</li>
-        <li>Second Item</li>
-        <li>Third Item</li>
+        ${items.map(([id, i]) => `<li data-id="${id}">${i.name} - ${i.serial} <a href="/delete?=${id}">[Delete]</a></li>`).join('')}
     </ul>
 </div>`;
 
 module.exports = (req, res) => {
-    res.write(layout(catalogPage, 'Catalog'))
+    res.write(layout(catalogPage(Object.entries(database.database))))
     res.end()
 }
