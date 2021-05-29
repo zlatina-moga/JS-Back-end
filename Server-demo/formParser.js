@@ -16,3 +16,5 @@ async function parse(req){
         })
     })
 }
+
+module.exports = parse;
