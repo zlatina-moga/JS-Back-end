@@ -1,20 +1,11 @@
-const layout = require('../views/layout');
+const {layout, render} = require('../template');
 const database = require('../database');
 
-const catalogPage = (items) => `
-<div>
-    <h1>Catalog</h1>
-    <form method="POST" action ="/create">
-        <label>Name <input type="text" name="name"></label>
-        <label>S/N <input type="text" name="serial"></label>
-        <input type="submit" value="Create Item">
-    </form>
-    <ul>
-        ${items.map(([id, i]) => `<li data-id="${id}">${i.name} - ${i.serial} <a href="/delete?=${id}">[Delete]</a></li>`).join('')}
-    </ul>
-</div>`;
 
-module.exports = (req, res) => {
-    res.write(layout(catalogPage(Object.entries(database.database))))
+module.exports = async (req, res) => {
+    const catalogPage = await render('catalog', {
+        items: Object.entries(database.database).map(([id, i]) => `<li data-id="${id}">${i.name} - ${i.serial} <a href="/delete?=${id}">[Delete]</a></li>`).join('')
+    })
+    res.write(await layout(catalogPage, 'Catalog'))
     res.end()
 }
