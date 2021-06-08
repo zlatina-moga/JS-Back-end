@@ -19,13 +19,28 @@ function sendFile(res, relativeFilePath){
                 'Content-Length': Buffer.byteLength(message),
                 'Content-Type': 'text/plain'
             }).end(message)
+            return;
         }
+        res.writeHead(200, {
+            'Content-Length': Buffer.byteLength(data),
+            'Content-Type': 'text/html'
+        }).end(data)
     })
 }
 
 function httpHandler(req, res){
     const path = url.parse(req.url).path;
-    res.end('Hello')
+    const fileRelativePath = routeMap[path];
+
+    if(fileRelativePath == undefined){
+        const data = 'Not Found'
+        res.writeHead(404, {
+            'Content-Length': Buffer.byteLength(data),
+            'Content-Type': 'text/plain'
+        }).end(data)
+        return;
+    }
+    sendFile(res, fileRelativePath)
 }
 
 http.createServer(httpHandler).listen(config.port, () => {
