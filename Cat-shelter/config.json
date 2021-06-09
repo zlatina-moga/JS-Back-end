@@ -1,4 +1,5 @@
 {
     "port": 3000,
-    "viewsDir": "views"
+    "viewsDir": "views",
+    "staticFilesDir": "content"
 }
