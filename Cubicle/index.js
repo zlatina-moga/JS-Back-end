@@ -1,16 +1,35 @@
 const express = require('express');
 const hbs = require('express-handlebars');
-const catalog = require('./controllers/catalog');
 
-const app = express();
-const port = 3000;
+const {init: storage} = require('./models/storage')
 
-app.engine('hbs', hbs({
-    extname: '.hbs'
-}))
-app.set('view engine', 'hbs')
-app.use(express.static('/static', express.static('static')))
+const {catalog} = require('./controllers/catalog');
+const {about} = require('./controllers/about');
+const {create, post} = require('./controllers/create')
+const {details} = require('./controllers/details')
+const {notFound} = require('./controllers/notFound')
 
- app.get('/', catalog)
+start()
 
-app.listen(port, () => console.log(`Server listening on ${port}`))
+async function start(){
+    const app = express();
+    const port = 3000;
+
+    app.engine('hbs', hbs({
+        extname: '.hbs'
+    }))
+
+    app.set('view engine', 'hbs')
+    app.use('/static', express.static('static'))
+    app.use(await storage())
+
+    app.get('/', catalog);
+    app.get('/about', about);
+    app.get('/details/:id', details);
+    app.get('/create', create)
+    app.post('/create', post)
+
+    app.all('*', notFound)
+
+    app.listen(port, () => console.log(`Server listening on port ${port}`))
+}
