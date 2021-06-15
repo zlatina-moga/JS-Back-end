@@ -1,0 +1,8 @@
+{
+    "id": {
+        "Name": "string",
+        "Description": "string",
+        "Image URL": "string",
+        "Difficulty": "level"
+    }
+}
