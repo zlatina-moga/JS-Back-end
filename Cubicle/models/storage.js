@@ -1,5 +1,5 @@
 const fs = require('fs/promises');
-const uniqueid = require('uniqueid')
+const uniqueid = require('uniqid')
 
 let data = {};
 
@@ -20,22 +20,41 @@ async function init() {
     }
 }
 
-async function getAll(){
-    return Object
-        .entries(data)
-        .map(([id, v]) => Object.assign({}, { id }, {v}))
+async function getAll(query){
+    let cubes = Object
+      .entries(data)
+      .map(([id, v]) => Object.assign({}, { id }, v))
+
+        if (query.search){
+          cubes = cubes.filter(c => c.name.toLowerCase().includes(query.search.toLowerCase()))
+        }
+
+        if (query.from){
+            cubes = cubes.filter(c => c.difficulty >= Number(query.from))
+        }
+
+        if (query.to){
+            cubes = cubes.filter(c => c.difficulty <= Number(query.to))
+        }
+    return cubes;
 }
 
 async function getById(id){
-    return data[id];
+    const cube = data[id];
+    if (cube) {
+        return Object.assign({}, { id }, cube)
+    } else {
+        return undefined;
+    }
 }
 
 async function create(cube){
     const id = uniqueid();
-    data[id] = cube
+    data[id] = cube;
 
     try {
-        await fs.writeFile('./models/data.json', JSON.stringify(data))
+        await fs.writeFile('./models/data.json', JSON.stringify(data, null, 2))
+        console.log('>>> created new record')
     } catch(err){
         console.error('Error writing out database')
     }   
