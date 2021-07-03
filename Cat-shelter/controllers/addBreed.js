@@ -1,10 +1,10 @@
 const parseForm = require('../formParser')
-const loadTemplate = require('../template');
+const {loadTemplate, renderLayout} = require('../template');
 const database = require('../database/breeds')
 
 async function addBreed(req, res){
     const addBreedPage = await loadTemplate('addBreed')
-    res.write(addBreedPage)
+    res.write(await renderLayout(addBreedPage))
     res.end()
 }
 
