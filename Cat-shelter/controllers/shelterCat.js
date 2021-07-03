@@ -1,9 +1,9 @@
-const loadTemplate = require('../template');
+const {loadTemplate, renderLayout} = require('../template');
 const database = require('../database/cats');
 
 async function shelterCat(req, res){
     const shelterPage = await loadTemplate('catShelter')
-    res.write(shelterPage);
+    res.write(await renderLayout (shelterPage));
     res.end()
 }
 
