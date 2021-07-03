@@ -9,4 +9,13 @@ async function loadTemplate(name){
     }
 }
 
-module.exports = loadTemplate;
+async function renderLayout(html) {
+    const layout = await loadTemplate('layout')
+    return layout.replace('{{html}}', html)
+}
+
+
+module.exports = {
+    loadTemplate,
+    renderLayout
+};
