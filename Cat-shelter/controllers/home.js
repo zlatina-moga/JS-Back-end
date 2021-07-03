@@ -1,7 +1,7 @@
-const loadTemplate = require('../template');
+const {loadTemplate, renderLayout} = require('../template');
 
 module.exports = async(req, res) => {
     const homePage = await loadTemplate('index')
-    res.write(homePage)
+    res.write(await renderLayout(homePage))
     res.end()
 }
