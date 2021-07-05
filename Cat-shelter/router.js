@@ -1,6 +1,12 @@
+const staticContent = require('./controllers/staticContent');
 const handlers = {}
 
 function match(method, url){
+
+    if (method == 'GET' && url.startsWith('/static/')){
+        return staticContent;
+    }
+
     const methods = handlers[url] || {};
     const handler = methods[method]
 
