@@ -1,5 +1,6 @@
 const http = require('http');
 const router = require('./router');
+const path = require('path')
 
 const homeController = require('./controllers/home');
 const {addBreed, createBreed} = require('./controllers/addBreed');
@@ -16,7 +17,7 @@ router.post('/add-cat', createCat)
 
 router.delete('shelter-cat', deleteCat)
 
-const port =  3000;
+const PORT =  process.env.PORT || 3000;
 const server = http.createServer(requestHandler)
 
 function requestHandler(req, res){
@@ -26,4 +27,4 @@ function requestHandler(req, res){
     handler(req, res)
 }
 
-server.listen(port, () => console.log(`Server listening on port ${port}`))
+server.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
