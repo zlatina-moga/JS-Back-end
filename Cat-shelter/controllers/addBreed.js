@@ -11,16 +11,19 @@ module.exports = async (req, res) => {
         res.end()
     } else if (req.method === 'POST'){
         const breedsDataFilePath = path.join(__dirname, '../database/breeds.json')
-        const breedsData = await parseForm(req);
+        const breedsDataBuffer = await fs.readFile(breedsDataFilePath);
+        const breedsData = JSON.parse(breedsDataBuffer);
+        breedsData.push((await parseForm(req)).breed)
 
         try {
-            await fs.writeFile(breedsDataFilePath, JSON.stringify(breedsData.breed))
+            await fs.writeFile(breedsDataFilePath, JSON.stringify(breedsData))
             console.log('breed added')
 
-            res.writeHead(301, {
+            res.writeHead(302, {
                 'Location': '/'
             })
             res.end() 
+            
         } catch(err){
             res.statusCode = 500;
             res.end(`Error >>> ${err}`)
