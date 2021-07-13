@@ -3,7 +3,7 @@ const router = require('./router');
 const path = require('path')
 
 const homeController = require('./controllers/home');
-const {addBreed, createBreed} = require('./controllers/addBreed');
+const addBreed = require('./controllers/addBreed');
 const {addCat, createCat } = require('./controllers/addCat');
 const { deleteCat, shelterCat } = require('./controllers/shelterCat');
 
@@ -12,7 +12,7 @@ router.get('/add-breed', addBreed)
 router.get('/add-cat', addCat)
 router.get('/shelter-cat', shelterCat)
 
-router.post('/add-breed', createBreed);
+router.post('/add-breed', addBreed);
 router.post('/add-cat', createCat)
 
 router.delete('shelter-cat', deleteCat)
