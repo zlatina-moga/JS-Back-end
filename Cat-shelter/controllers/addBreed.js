@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs/promises')
-const parseForm = require('../formParser')
+const {parse} = require('../formParser')
 const {loadTemplate, renderLayout} = require('../template');
 
 
@@ -13,11 +13,18 @@ module.exports = async (req, res) => {
         const breedsDataFilePath = path.join(__dirname, '../database/breeds.json')
         const breedsDataBuffer = await fs.readFile(breedsDataFilePath);
         const breedsData = JSON.parse(breedsDataBuffer);
-        breedsData.push((await parseForm(req)).breed)
+        let newBreedEntry = (await parse(req)).breed;
+        newBreedEntry = newBreedEntry.replace('+', ' ')
 
+        if (breedsData.includes(newBreedEntry)){
+            return res.end('Breed already exists') // needs nicer UX formatting
+        } else {
+            breedsData.push(newBreedEntry)
+        }
+        
         try {
             await fs.writeFile(breedsDataFilePath, JSON.stringify(breedsData))
-            console.log('breed added')
+            console.log(`${newBreedEntry} breed added`)
 
             res.writeHead(302, {
                 'Location': '/'
