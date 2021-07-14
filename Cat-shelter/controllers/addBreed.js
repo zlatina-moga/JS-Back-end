@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs/promises')
-const {parse} = require('../formParser')
+const parse = require('../formParser')
 const {loadTemplate, renderLayout} = require('../template');
 
 
