@@ -1,16 +1,28 @@
 const fs = require('fs')
 
 module.exports = (req, res) => {
-    const filename = req.url.slice(8)
-    const file = fs.createReadStream(`./content/${filename}`)
+    const pathname = req.url;
+
+    let file;
+
+    if (pathname.startsWith('/content/styles')){
+        file = fs.createReadStream(`.${pathname}`)
+    } else if (pathname.startsWith('/content/images')){
+        file = fs.createReadStream(`.${pathname}`)
+    }
+    
     let type;
 
-    if(filename.endsWith('css')){
+    if(pathname.endsWith('css')){
         type = 'text/css'
-    } else if (filename.endsWith('jpg') || filename.endsWith('jpeg')){
+    } else if (pathname.endsWith('jpg') || pathname.endsWith('jpeg')){
         type = 'image/jpeg';
-    } else if (filename.endsWith('png')){
+    } else if (pathname.endsWith('png')){
         type = 'image/png'
+    } else if (pathname.endsWith('ico')){
+        type = 'image/x-icon'
+    } else {
+        type = 'text/plain'
     }
         
     file.on('error', () => {
