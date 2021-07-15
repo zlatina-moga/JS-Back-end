@@ -4,8 +4,8 @@ const fs = require('fs/promises')
 module.exports = async() => {
     const idList = [];
 
-    const catsDataBuffer = await fs.readFile(path.join(__dirname, '../database/cats.json'));
-    JSON.parse(catsDataBuffer.toString().map(c => idList.push(c.id)))
+    const catsDataBuffer = await fs.readFile(path.join(__dirname, './database/cats.json'));
+    JSON.parse(catsDataBuffer.toString()).map(c => idList.push(c.id))
     
     let id;
     do {
@@ -15,4 +15,3 @@ module.exports = async() => {
 
     return id;
 }
-
