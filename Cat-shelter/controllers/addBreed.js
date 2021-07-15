@@ -1,5 +1,5 @@
-const path = require('path');
 const fs = require('fs/promises')
+const path = require('path');
 const parse = require('../formParser')
 const {loadTemplate, renderLayout} = require('../template');
 
@@ -33,7 +33,9 @@ module.exports = async (req, res) => {
             
         } catch(err){
             res.statusCode = 500;
-            res.end(`Error >>> ${err}`)
+            res.write('Internal server error')
+            console.log(err)
+            res.end()
         }
     }
 }
