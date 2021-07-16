@@ -3,7 +3,7 @@ const handlers = {}
 
 function match(method, url){
 
-    if (method == 'GET' && url.startsWith('/static/')){
+    if (method == 'GET' && url.startsWith('/content/')){
         return staticContent;
     }
 
