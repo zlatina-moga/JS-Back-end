@@ -4,7 +4,7 @@ async function createPlay(playData){
     const pattern = new RegExp(`^${playData.title}$`, 'i')
     const existing = await PlayModel.findOne({title: {$regex: pattern}})
 
-    if(existing){
+    if (existing){
         throw new Error(`A play with this name already exists`)
     }
 
@@ -30,18 +30,26 @@ async function deletePlay(id){
 }
 
 async function getAllPlays(){
-    return await PlayModel.find({ public: true}).sort({createdAt: -1}).lean()
+    return PlayModel.find({ public: true}).sort({createdAt: -1}).lean()
 }
 
 async function getPlayById(id){
-    return await PlayModel.findById(id).populate('usersLiked').lean()
+    return PlayModel.findById(id).populate('usersLiked').lean()
 }
 
+async function likePlay(playId, userId){
+    const play = await PlayModel.findById(playId);
+
+    play.usersLiked.push(userId)
+
+    return play.save()
+}
 
 module.exports = {
     createPlay,
     editPlay,
     deletePlay,
     getAllPlays,
-    getPlayById
+    getPlayById,
+    likePlay
 }
