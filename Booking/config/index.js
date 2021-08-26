@@ -1,6 +1,6 @@
 module.exports = {
     PORT: 3000,
-    DB_CONNECTION_STRING: 'mongodb://localhost:27017/booking',//add db name
-    TOKEN_SECRET: 'this is very secure',
-    COOKIE_NAME: 'Session token'
+    DB_CONNECTION_STR: 'mongodb://localhost:27017/bookingUni',
+    COOKIE_NAME: 'Session token',
+    TOKEN_SECRET: 'Your secret is safe'
 }

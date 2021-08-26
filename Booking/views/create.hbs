@@ -1,8 +1,8 @@
 <section id="viewAddhotel">
     <h2>Add new hotel</h2>
-    <form action="/hotels/create" method="POST" id="formAddhotel">
+    <form id="formAddhotel" action="/hotels/create" method="POST">
         <label for="hotel">Hotel name:</label>
-        <input type="text" id="hotel" name="hotel" placeholder="Hotel name" value="{{hotelData.name}}">
+        <input type="text" id="hotel" name="name" placeholder="Hotel name" value="{{hotelData.name}}">
         <label for="city">City:</label>
         <input type="text" id="city" name="city" placeholder="City" value="{{hotelData.city}}">
         <label for="free-rooms">Free rooms:</label>

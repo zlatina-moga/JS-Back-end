@@ -1,69 +1,65 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const userService = require('../services/user');
+const userService = require('../services/userService');
 const { TOKEN_SECRET, COOKIE_NAME } = require('../config')
 
 module.exports = () => (req, res, next) => {
-    if (parseToken(req, res)){
+    if (parseToken(req, res)) {
         req.auth = {
-            async register(username, email, password) {
-                const token = await register(username, email, password)
+            async register(email, username, password) {
+                const token = await register(email, username, password)
                 res.cookie(COOKIE_NAME, token)
             },
-            async login(username, password){
+            async login(username, password) {
                 const token = await login(username, password)
                 res.cookie(COOKIE_NAME, token)
             },
             logout(){
-                res.clearCookie(COOKIE_NAME);
+                res.clearCookie(COOKIE_NAME)
             }
         }
         next();
     }
 }
 
-async function register(username, email, password){
+async function register(email, username, password){
     const existingUsername = await userService.getUserByUsername(username);
     const existingEmail = await userService.getUserByEmail(email);
 
     if (existingUsername){
-        throw new Error('Username is taken!')
+        throw new Error('Username is already taken')
     } else if (existingEmail){
-        throw new Error('Email is already in use!')
+        throw new Error('Email is already taken')
+    } else if (password == ''){
+        throw new Error('All fields are required')
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userService.createUser(username, email, hashedPassword)
+    const user = await userService.createUser(email, username, hashedPassword);
 
     return generateToken(user)
 }
 
 async function login(username, password){
     const user = await userService.getUserByUsername(username);
+    const match = await bcrypt.compare(password, user.hashedPassword)
 
-    if (!user){
-        throw new Error('No such user')
-    }
-
-    const hasMatch = await bcrypt.compare(password, user.hashedPassword);
-
-    if (!hasMatch){
-        throw new Error('Incorrect password')
+    if (!user || !match){
+        throw new Error('Incorrect username or password')
     }
 
     return generateToken(user)
-    
 }
 
 function generateToken(userData){
     return jwt.sign({
         _id: userData._id,
-        username: userData.username,
-        email: userData.email
-    }, TOKEN_SECRET);
+        email: userData.email,
+        username: userData.username
+    }, TOKEN_SECRET)
 }
 
-function parseToken(req, res){
+function parseToken(req, res) {
     const token = req.cookies[COOKIE_NAME];
 
     if (token) {
@@ -71,11 +67,11 @@ function parseToken(req, res){
             const userData = jwt.verify(token, TOKEN_SECRET);
             req.user = userData;
             res.locals.user = userData;
-        }
-        catch (err) {
+            return true
+        } catch (err) {
             res.clearCookie(COOKIE_NAME)
             res.redirect('/auth/login')
-            return false;
+            return false
         }
     }
     return true;

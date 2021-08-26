@@ -4,26 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <title>BookingUni</title>
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
 
     <div id="container">
-
         {{#if errors}}
-        <div>
-            <div class="notification errorBox">
-                {{#each errors}}
-                <p><span>{{this}}</span></p>
-                {{/each}}
+            <div>
+                <div class="notification errorBox">
+                    {{#each errors}}
+                    <p><span>{{this}}</span></p>
+                    {{/each}}
+                </div>
             </div>
-        </div>
         {{/if}}
 
         <nav>
-
-             {{#if user}}
+            {{#if user}}
             <div class="left-container">
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -31,11 +29,12 @@
                 </ul>
             </div>
             <div class="right-container">
-                <a href="/user" class="log-out">{{user.username}}</a>
+                <a href="/profile/{{user._id}}" class="log-out">{{user.username}}</a>
                 <a href="/auth/logout" class="log-out">Logout</a>
             </div>
+
             {{else}}
-            <div class="left-container">
+             <div class="left-container">
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/auth/login">Login</a></li>
@@ -43,11 +42,12 @@
                 </ul>
             </div>
             {{/if}}
-
         </nav>
-        
-    {{{body}}}
 
+
+        {{{body}}}
+
+        
         <footer>@SoftUni - JS Back-end - BookingUni 2020</footer>
     </div>
 
