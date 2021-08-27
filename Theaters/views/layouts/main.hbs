@@ -9,35 +9,37 @@
 
 <body>
 
-    <nav>
-        <a>Theater</a>
-        <ul>
-            {{#if user}}
-            <li><a href="/">Home </a></li>
-            <li><a href="/auth/logout">Logout</a></li>
-            {{else}}
-            <li><a href="/">Home </a></li>
-            <li><a href="/auth/login">Login</a></li>
-            <li><a href="/auth/register">Register</a></li>
-            {{/if}}
-        </ul>
-    </nav>
+            <nav>
+                <a a href="/">Theater</a>
+                <ul>
+                    {{#if user}}
+                    <li><a href="/">Home </a></li>
+                    <li><a href="/auth/logout">Logout</a></li>
 
-        {{#if errors}}
+                    {{else}}
+                    <li><a href="/">Home </a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register">Register</a></li>
+                    {{/if}}
+                </ul>
+            </nav>
+
+            {{#if errors}}
             <section class="notifications error">
                 {{#each errors}}
-                <p> {{this}} </p>
+                <p>{{this}}</p>
                 {{/each}}
             </section>
-        {{/if}}
+            {{/if}}
 
-              {{{body}}}
-  
-                        <footer>
-                <div>© 2020
-                    <a href="https://softuni.bg/courses/js-back-end">JS Back-End</a>
-                </div>
-            </footer>
+    {{{body}}}
+
+
+        <footer>
+            <div>© 2020
+                <a href="https://softuni.bg/courses/js-back-end">JS Back-End</a>
+            </div>
+        </footer>
 
 </body>
 
