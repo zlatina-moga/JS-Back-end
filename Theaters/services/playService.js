@@ -1,55 +1,68 @@
-const PlayModel = require('../models/Play');
+const Play = require('../models/Play');
+constUser = require('../models/User')
+
+async function getAllPlays(){
+    return await Play.find({}).lean()
+}
+
+async function getTopPlays(){
+    return await Play.find({}).sort({likes: -1}).limit(3).lean()
+}
+
+async function getPlayById(id){
+    return await Play.findById(id).populate('likedBy').lean()
+}
 
 async function createPlay(playData){
-    const pattern = new RegExp(`^${playData.title}$`, 'i')
-    const existing = await PlayModel.findOne({title: {$regex: pattern}})
-
-    if (existing){
-        throw new Error(`A play with this name already exists`)
-    }
-
-    const play = new PlayModel(playData)
+    const play = new Play(playData)
 
     await play.save()
     return play;
 }
 
 async function editPlay(id, playData){
-    const play = await PlayModel.findById(id);
+    const play = await Play.findById(id)
 
     play.title = playData.title;
     play.description = playData.description;
     play.imageUrl = playData.imageUrl;
-    play.public = Boolean(playData.public);
+    play.public = playData.public;
 
-    return play.save()
+    await play.save()
+    return play;
 }
 
 async function deletePlay(id){
-    return PlayModel.findByIdAndDelete(id)
-}
-
-async function getAllPlays(){
-    return PlayModel.find({ public: true}).sort({createdAt: -1}).lean()
-}
-
-async function getPlayById(id){
-    return PlayModel.findById(id).populate('usersLiked').lean()
+    return await Play.findByIdAndDelete(id)
 }
 
 async function likePlay(playId, userId){
-    const play = await PlayModel.findById(playId);
+    const play = await Play.findById(playId).lean()
+    const user = await User.findById(userId)
 
-    play.usersLiked.push(userId)
+    play.likedBy.push(userId);
+    user.plays.push(playId);
 
+    await user.save();
     return play.save()
 }
 
+async function getPlaysByDate(){
+    return await Play.find({public: true}).sort({createdAt: -1}).lean()
+}
+
+async function getPlaysByLikes(){
+    return await Play.find({}).sort({likes: -1}).lean()
+}
+
 module.exports = {
+    getAllPlays,
+    getPlayById,
     createPlay,
     editPlay,
     deletePlay,
-    getAllPlays,
-    getPlayById,
-    likePlay
+    likePlay,
+    getTopPlays,
+    getPlaysByDate,
+    getPlaysByLikes
 }
