@@ -1,34 +1,36 @@
 const router = require('express').Router();
-const { body, validationResult } = require ('express-validator')
-const { isGuest } = require('../middlewares/guards')
+const {body, validationResult} = require('express-validator');
+const { isGuest } = require('../middlewares/guards');
 
 router.get('/register', isGuest(), (req, res) => {
-    res.render('register')
+    res.render('user/register')
 })
 
 router.post(
     '/register',
-     isGuest(), 
-     body('username')
-        .isLength({min: 3}).withMessage('Username must be at least 3 characters long').bail()
-        .isAlphanumeric().withMessage('Username must contain only English letters and numbers'),
+    isGuest(),
+    body('username')
+        .matches(/^[A-Za-z0-9]*$/).withMessage('Username can consist only of english letters and digits')
+        .isLength({min: 3}).withMessage('Username must be at least 3 characters long.'),
     body('password')
-        .isLength({min: 3}).withMessage('Password must be at least 3 characters long').bail()
-        .isAlphanumeric().withMessage('Password may contain only English letters and numbers'),
-     body('rePass').custom((value, {req}) => {
-         if (value != req.body.password) {
+        .matches(/^[A-Za-z0-9]*$/).withMessage('Password can consist only of english letters and digits')
+        .isLength({min: 3}).withMessage('Password must be at least 3 characters long.'),
+    body('rePass').custom((value, {req}) => {
+        if (value != req.body.password){
             throw new Error('Passwords don\'t match')
         }
-         return true
-     }),
+        return true;
+    }),
     async (req, res) => {
-        const { errors } = validationResult(req)
+        const {errors} = validationResult(req)
         try {
-            if (errors.length > 0) {
+            if (errors.length > 0){
                 throw new Error(Object.values(errors).map(e => e.msg).join('\n'))
             }
-            await req.auth.register(req.body.username, req.body.password);
+
+            await req.auth.register(req.body.username, req.body.password)
             res.redirect('/')
+
         } catch (err){
             console.log(err.message)
             const ctx = {
@@ -37,34 +39,28 @@ router.post(
                     username: req.body.username
                 }
             }
-            res.render('register', ctx)
+            res.render('user/register', ctx)
         }
-    
-})
-
+    }
+)
 
 router.get('/login', isGuest(), (req, res) => {
-    res.render('login')
+    res.render('user/login')
 })
 
 router.post('/login', isGuest(), async (req, res) => {
     try {
-        await req.auth.login(req.body.username, req.body.password)
+        await req.auth.login(req.body.username, req.body.password);
         res.redirect('/')
-    } catch (err) {
+    } catch(err){
         console.log(err.message)
-        let erros = [err.message];
-
-        if (err.type == 'credential') {
-            errors = ['Incorrect username or password!']
-        }
         const ctx = {
-            errors,
+            errors: err.message.split('\n'),
             userData: {
-                username: req.body.username
+                username: req.body.username,
             }
         }
-        res.render('login', ctx)
+        res.render('user/login', ctx)
     }
 })
 
