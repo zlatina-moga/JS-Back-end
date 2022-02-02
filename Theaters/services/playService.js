@@ -1,5 +1,5 @@
 const Play = require('../models/Play');
-constUser = require('../models/User')
+const User = require('../models/User')
 
 async function getAllPlays(){
     return await Play.find({}).lean()
